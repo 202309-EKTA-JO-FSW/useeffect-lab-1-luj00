@@ -1,24 +1,28 @@
-import DogList from '../Components/DogList/DogList'
-import Form from '../Components/Form/Form'
-import { Inter } from 'next/font/google'
-
-
-const inter = Inter({ subsets: ['latin'] })
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import DogList from '../Components/DogList/DogList';
+import Form from '../Components/Form/Form';
 
 export default function Home() {
-  // You will need to put a state here to save all the dogs data into
-  // And you will fetch the data with useEffect
+  const [dogData, setDogData] = useState([]);
 
-   return (
+  useEffect(() => {
+    // Fetch dog data when the component mounts
+    axios
+      .get('https://dog.ceo/api/breeds/image/random/3')
+      .then((response) => {
+        setDogData(response.data.message);
+      })
+      .catch((error) => {
+        console.error('Error fetching dog data:', error);
+      });
+  }, []);
+
+  return (
     <div className="card">
-      {/* When the button is clicked in the form, it should fetch the information. 
-          How can we do that by utilizing useState?
-          
-      */}
-      {/* <Form /> Uncomment <Form /> if you are going after the bonus */}
-      {/* This page should receive the images array */}
-      <DogList />
+      {/* Uncomment the Form component to fetch data */}
+      { <Form setDogData={setDogData} ></Form>}
+      <DogList dogData={dogData} />
     </div>
   );
 }
-
